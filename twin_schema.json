@@ -1,0 +1,146 @@
+{
+  "client_id": "C-00417",
+  "age": 54,
+  "tenure_years": 8.5,
+  "dependents": [
+    {
+      "age": 19
+    },
+    {
+      "age": 16
+    }
+  ],
+  "annual_fee_revenue": 21400,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 1240000,
+      "account_type": "taxable",
+      "unrealized_gain": 410000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 260000,
+      "account_type": "taxable",
+      "unrealized_gain": 38000
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 180000,
+      "account_type": "taxable",
+      "unrealized_gain": -6000
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 620000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 140000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 95000,
+      "account_type": "tax_exempt",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 165000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "investable_assets": 2700000,
+  "idle_cash": 165000,
+  "annual_income": 385000,
+  "monthly_spending": 14200,
+  "tax_bracket": 0.35,
+  "goals": [
+    {
+      "label": "education",
+      "target_amount": 220000,
+      "target_date": "2028-08-01"
+    },
+    {
+      "label": "retirement",
+      "target_amount": 4200000,
+      "target_date": "2037-06-01"
+    }
+  ],
+  "stated_risk_tolerance": "high",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "sold_heavily",
+  "trailing_return_12m": 0.0538,
+  "benchmark_return_12m": 0.0928,
+  "recent_flows": [
+    {
+      "amount": 9500,
+      "date": "2025-09-02",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 9500,
+      "date": "2025-10-02",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 42000,
+      "date": "2025-11-14",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 9500,
+      "date": "2025-11-03",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 9500,
+      "date": "2025-12-02",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 180000,
+      "date": "2026-02-18",
+      "direction": "outflow",
+      "destination_type": "competitor_institution"
+    },
+    {
+      "amount": 95000,
+      "date": "2026-04-07",
+      "direction": "outflow",
+      "destination_type": "competitor_institution"
+    },
+    {
+      "amount": 31000,
+      "date": "2026-05-22",
+      "direction": "outflow",
+      "destination_type": "unknown"
+    },
+    {
+      "amount": 140000,
+      "date": "2026-07-11",
+      "direction": "outflow",
+      "destination_type": "competitor_institution"
+    }
+  ],
+  "_generation_notes": {
+    "why_this_client_is_interesting": [
+      "Stated tolerance is high but drawdown_behavior is sold_heavily, so risk_capacity derives down to moderate. Demonstrates revealed vs stated.",
+      "Three outflows to a competitor institution, accelerating, with contributions stopping after December. Diagnosable as competitor consolidation.",
+      "Fee load is 21400 / 2700000 = 0.79 percent, which is not extreme. Fee sensitivity should NOT be the dominant diagnosed cause.",
+      "Trailing return is 5.38% against a 9.28% benchmark \u2014 a spread of 3.89 points, well beyond the 0.79% fee. Performance dissatisfaction should surface as a second diagnosed cause alongside competitor consolidation.",
+      "Equity is heavily overweight against any moderate target, but 410000 of unrealized gain sits in the taxable account, so the builder should prefer correcting inside tax_deferred and may return null on the taxable leg.",
+      "165000 idle cash is enough for one sizeable promote proposal but not two, so this client can generate an exclusivity conflict at the CDTA."
+    ]
+  }
+}
