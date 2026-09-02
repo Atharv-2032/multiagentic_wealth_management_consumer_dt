@@ -1,0 +1,48 @@
+{
+  "seed": 2026,
+  "n_clients": 10000,
+  "churn": {
+    "target_rate": 0.13,
+    "actual_rate": 0.1301,
+    "threshold": 0.5515,
+    "n_churners": 1301
+  },
+  "label_rule": {
+    "note": "Weights are stipulated, not estimated. They encode an ordering the churn literature broadly supports; the magnitudes are chosen for plausibility and describe no real population.",
+    "weights": {
+      "competitor_share": 0.34,
+      "outflow_intensity": 0.26,
+      "perf_spread_excess": 0.15,
+      "fee_excess": 0.13,
+      "contributions_stopped": 0.07,
+      "sold_heavily": 0.05,
+      "tenure_protection": -0.1,
+      "fee_x_perf_interaction": 0.08
+    },
+    "noise_sd": 0.24
+  },
+  "distributions": {
+    "portfolio_value": {
+      "p10": 61500,
+      "median": 315750,
+      "p90": 1527500
+    },
+    "fee_rate": {
+      "p10": 0.00822,
+      "median": 0.01048,
+      "p90": 0.011
+    },
+    "flows_per_client": {
+      "p10": 4,
+      "median": 15,
+      "p90": 18
+    },
+    "severity_of_churners": {
+      "p10": 0.116,
+      "median": 0.423,
+      "p90": 0.722
+    },
+    "pct_no_competitor_flow": 73.5,
+    "pct_churners_without_competitor_flow": 34.1
+  }
+}
