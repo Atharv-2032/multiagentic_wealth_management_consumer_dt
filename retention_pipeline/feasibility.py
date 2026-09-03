@@ -86,6 +86,19 @@ def feasible_set(twin, causes, ledger):
     spent = _spent_in_last_year(ledger, twin["client_id"])
     remaining = round(cap - spent, 2)
 
+    # Guard rail, not a fix. Every past grant in a client's ledger should have
+    # been affordable under the cap at the time it was made, so remaining should
+    # never go negative. If it does, something upstream — most likely the
+    # persona/ledger generator — created a grant that violated the cap when it
+    # was issued. That is a data bug, and it should be surfaced loudly here
+    # rather than silently clamped and hidden inside a "rejected: spend_cap"
+    # entry that looks like ordinary behaviour.
+    assert remaining >= 0, (
+        f"client {twin['client_id']}: remaining spend cap is {remaining}, "
+        f"which means a past grant exceeded the cap when it was issued. "
+        f"Fix the ledger/persona generation, not this engine."
+    )
+
     primary = causes[0]
     discovery_only = (
         primary["cause"] in DISCOVERY_ONLY_CAUSES

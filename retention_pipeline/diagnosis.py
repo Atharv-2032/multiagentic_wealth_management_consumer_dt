@@ -1,19 +1,19 @@
 """
-Churn diagnosis — stage two of the retention pipeline.
+Churn diagnosis -- stage two of the retention pipeline.
 
 Receives a client the detector flagged and returns the likely reasons, drawn from
 a fixed taxonomy, each with a confidence level and the evidence supporting it.
 
 Why a language model here
--------------------------
+--------------------------
 Cause labels essentially do not exist. Supervised cause classification would need
 exit interviews or reliable advisor-recorded reasons at scale, which firms rarely
-hold. What this stage does — synthesis over heterogeneous evidence, some of it
-structured, some of it a list of dated transactions — is something a language
+hold. What this stage does -- synthesis over heterogeneous evidence, some of it
+structured, some of it a list of dated transactions -- is something a language
 model can do without labels.
 
 What it does NOT do
--------------------
+--------------------
 It does not choose a remedy, and it does not decide what happens to a
 low-confidence diagnosis. Both are deterministic and live in the feasibility
 engine, which narrows the option set before the strategy decider sees it. The
@@ -21,11 +21,18 @@ model produces a judgement; rules turn that judgement into a constraint.
 """
 
 import json
+import os
+import time
+
+from google import genai
 
 from catalogs import CAUSES
 
-MODEL = "claude-sonnet-4-6"
+MODEL = "gemini-3.7-flash"
 MAX_CAUSES = 3
+MAX_RETRIES = 1  # one retry on a malformed/out-of-taxonomy response, then raise
+
+CACHE_PATH = os.path.join("out", "diagnoses.json")
 
 
 # ---------------------------------------------------------------------------
@@ -46,33 +53,33 @@ You are not deciding what to do about it. Another component handles that.
 
 ## The evidence you receive
 
-**Client profile** — age, tenure with the firm, portfolio holdings by asset class and \
+**Client profile** -- age, tenure with the firm, portfolio holdings by asset class and \
 account type, annual fee revenue the client generates, realised return over the last \
 twelve months, and the benchmark return a comparable low-cost index portfolio would \
 have delivered over the same period at the same asset mix.
 
-**Transaction list** — every material money movement over the last twelve months. Each \
+**Transaction list** -- every material money movement over the last twelve months. Each \
 carries an amount, a date, a direction, and a destination category:
 
-- `competitor_institution` — money that arrived at another financial firm. This is a \
+- `competitor_institution` -- money that arrived at another financial firm. This is a \
 transfer of assets away, not spending.
-- `merchant` — money spent. A purchase, a payment, a withdrawal for consumption.
-- `own_account` — money moving between the client's own accounts. Not a loss of assets.
-- `unknown` — the destination could not be identified. Account aggregation coverage is \
+- `merchant` -- money spent. A purchase, a payment, a withdrawal for consumption.
+- `own_account` -- money moving between the client's own accounts. Not a loss of assets.
+- `unknown` -- the destination could not be identified. Account aggregation coverage is \
 partial, so this is a gap in visibility rather than evidence of anything in particular. \
 Do not treat it as suspicious.
 
-**Computed ratios** — figures derived from the above, provided so you do not have to \
+**Computed ratios** -- figures derived from the above, provided so you do not have to \
 calculate. Two are worth understanding:
 
-- `perf_spread_excess` — how far the client's return fell below the benchmark, *after \
+- `perf_spread_excess` -- how far the client's return fell below the benchmark, *after \
 subtracting the fee they pay*. A client trailing the benchmark by exactly their fee is \
 getting what the arrangement implies, and this figure will be near zero. Only a clearly \
 positive value indicates underperformance beyond the cost of the service.
-- `fee_excess` — how far the client's effective fee rate sits above the book average of \
+- `fee_excess` -- how far the client's effective fee rate sits above the book average of \
 0.92 percent.
 
-**Risk score** — the model's estimated probability of attrition and its estimated severity.
+**Risk score** -- the model's estimated probability of attrition and its estimated severity.
 
 ## The causes you may return
 
@@ -96,7 +103,7 @@ percentage point shortfall beyond fees; above 0.04 is substantial.
 **`fee_sensitivity`**
 The client pays materially more than comparable clients and is likely to have noticed.
 Evidence: `fee_excess` clearly positive. This is strengthened considerably when combined \
-with weak performance — a high fee is tolerable when returns are strong and becomes \
+with weak performance -- a high fee is tolerable when returns are strong and becomes \
 salient when they disappoint.
 
 **`planned_drawdown`**
@@ -104,7 +111,7 @@ Assets are declining because the client is spending them as intended, not becaus
 relationship is failing.
 Evidence: outflows to `merchant` rather than to a competitor, a client at or near \
 retirement age, an absence of transfers elsewhere. This is not churn, and identifying it \
-correctly matters — a system that fights a client's planned retirement withdrawals is \
+correctly matters -- a system that fights a client's planned retirement withdrawals is \
 worse than useless.
 
 **`insufficient_evidence`**
@@ -116,7 +123,7 @@ knowing.
 ## How to reason
 
 Work from what is in the data. For every cause you return, point to the specific facts \
-that support it — name amounts, dates, destinations, or figures.
+that support it -- name amounts, dates, destinations, or figures.
 
 Two failure modes to avoid.
 
@@ -129,18 +136,18 @@ client's state of mind.
 Whether it explains the client's behaviour is a separate question, and often the answer \
 is that it does not.
 
-A client may be leaving for more than one reason, and often is — poor performance and a \
+A client may be leaving for more than one reason, and often is -- poor performance and a \
 high fee compound. Return up to three causes, ordered with the best-supported first. \
 Return one if only one is supported.
 
 ## Confidence
 
-Assign each cause a confidence level, judged by how well the evidence supports it — not \
+Assign each cause a confidence level, judged by how well the evidence supports it -- not \
 by how plausible the story feels.
 
-- `high` — the evidence is direct and admits little other explanation
-- `medium` — the evidence points this way, but other readings fit the same facts
-- `low` — plausible, but thinly supported
+- `high` -- the evidence is direct and admits little other explanation
+- `medium` -- the evidence points this way, but other readings fit the same facts
+- `low` -- plausible, but thinly supported
 
 Be willing to use `low`. A low-confidence diagnosis routes the client to a discovery \
 conversation, which is often the correct outcome.
@@ -244,7 +251,7 @@ VALID_CONFIDENCE = {"high", "medium", "low"}
 def parse_response(text):
     """
     Parse and validate. A malformed or out-of-taxonomy response is a failure to
-    surface, not something to silently repair — the whole point of a fixed
+    surface, not something to silently repair -- the whole point of a fixed
     taxonomy is that downstream components can rely on it.
     """
     cleaned = text.strip()
@@ -271,3 +278,85 @@ def parse_response(text):
             raise ValueError(f"no evidence cited for {c['cause']}")
 
     return causes
+
+
+# ---------------------------------------------------------------------------
+# Model call
+# ---------------------------------------------------------------------------
+#
+# One retry on a malformed or out-of-taxonomy response, then raise. Temperature
+# is 0 -- not full determinism, sampling still varies -- but it reduces
+# run-to-run variation, which matters given the paper claims reproducibility for
+# the deterministic stages and is honest about the model stage's variability.
+
+_client = None
+
+
+def _get_client():
+    global _client
+    if _client is None:
+        _client = genai.Client()  # reads GEMINI_API_KEY from the environment
+    return _client
+
+
+def _call_once(user_message):
+    client = _get_client()
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=user_message,
+        config=genai.types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+            temperature=0,
+            max_output_tokens=1500,
+        ),
+    )
+    return response.text
+
+
+def diagnose(twin, detector_output, use_cache=True):
+    """
+    Run diagnosis for one client. Cached to disk keyed by client_id, so
+    reruns of the pipeline while building downstream stages don't re-spend
+    on clients already diagnosed.
+    """
+    client_id = twin["client_id"]
+    cache = _load_cache() if use_cache else {}
+
+    if client_id in cache:
+        return cache[client_id]
+
+    user_message = build_user_message(twin, detector_output)
+
+    last_error = None
+    for attempt in range(MAX_RETRIES + 1):
+        raw = _call_once(user_message)
+        try:
+            causes = parse_response(raw)
+            break
+        except (json.JSONDecodeError, ValueError) as e:
+            last_error = e
+            time.sleep(1)
+    else:
+        raise RuntimeError(
+            f"diagnosis failed for {client_id} after {MAX_RETRIES + 1} attempt(s): "
+            f"{last_error}"
+        )
+
+    if use_cache:
+        cache[client_id] = causes
+        _save_cache(cache)
+
+    return causes
+
+
+def _load_cache():
+    if not os.path.exists(CACHE_PATH):
+        return {}
+    with open(CACHE_PATH) as f:
+        return json.load(f)
+
+
+def _save_cache(cache):
+    os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
+    with open(CACHE_PATH, "w") as f:
+        json.dump(cache, f, indent=2)
