@@ -24,7 +24,17 @@ decision. Cross-track arbitration reconciles this track's shortlist against the
 allocation and promote tracks before anything reaches a human.
 """
 
+import json
+import os
+import time
+
+from google import genai
+
+MODEL = "gemini-3.7-flash"
 MAX_OPTIONS = 3
+MAX_RETRIES = 1  # one retry on a malformed/out-of-set response, then raise
+
+CACHE_PATH = os.path.join("out", "strategies.json")
 
 
 SYSTEM_PROMPT = """\
@@ -161,3 +171,194 @@ no action may appear twice.
 For `accept_loss`, set `addresses` to the causes it is a response to, or to an empty \
 list where the point is that no permitted action addresses them.
 """
+
+
+# ---------------------------------------------------------------------------
+# User message
+# ---------------------------------------------------------------------------
+
+def build_user_message(twin, diagnosis, feasibility_output):
+    """
+    Assemble the client's evidence for strategy selection.
+
+    Three inputs, kept distinct in the message so the model does not confuse
+    what a diagnostic component concluded with what a policy engine permitted.
+
+    Only the permitted list is passed. The rejected list is audit trail --
+    exclusions explained after the fact, retrievable by compliance or human
+    review, but not something the model should reason about. The budget block
+    and touch budget are also withheld: the prompt states that every permitted
+    action is already affordable, so showing spend cap arithmetic invites
+    exactly the second-guessing the system prompt forbids.
+
+    Client profile is trimmed to the fields proportionality actually turns on --
+    fee revenue, portfolio value, tenure, age -- rather than the full twin.
+    The model does not need holdings or goals to rank remedies; those matter
+    upstream, in diagnosis.
+    """
+    profile = {
+        "annual_fee_revenue": twin["annual_fee_revenue"],
+        "portfolio_value": sum(h["value"] for h in twin["holdings"]),
+        "tenure_years": twin["tenure_years"],
+        "age": twin["age"],
+    }
+
+    return (
+        f"## Client profile\n{json.dumps(profile, indent=2)}\n\n"
+        f"## Diagnosis\n{json.dumps(diagnosis, indent=2)}\n\n"
+        f"## Permitted actions\n{json.dumps(feasibility_output['permitted'], indent=2)}\n\n"
+        f"Rank the permitted actions for this client."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Response validation
+# ---------------------------------------------------------------------------
+#
+# Validation is checked against the permitted set, not against the catalog. That
+# is the point of the stage division: an action outside the permitted set is not
+# a poor choice to be scored down, it is an invalid response. Same for a discount
+# outside the range -- the range was computed against policy and the client's
+# remaining budget, so a value beyond it is not a judgement call, it is a
+# violation, and it is caught here rather than reaching a human as a well-argued
+# recommendation for something the firm has already ruled out.
+
+
+def parse_response(text, permitted):
+    """
+    Parse and validate. A malformed response, a remedy outside the permitted
+    set, a repeated remedy, or a fee concession discount outside the given
+    range is a failure to surface, not something to silently repair.
+    """
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.split("```")[1]
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:]
+        cleaned = cleaned.strip()
+
+    data = json.loads(cleaned)
+
+    options = data.get("options", [])
+    if not options:
+        raise ValueError("no options returned")
+    if len(options) > MAX_OPTIONS:
+        raise ValueError(f"{len(options)} options returned, maximum is {MAX_OPTIONS}")
+
+    permitted_by_id = {p["remedy_id"]: p for p in permitted}
+
+    seen = set()
+    for o in options:
+        rid = o.get("remedy_id")
+        if rid not in permitted_by_id:
+            raise ValueError(f"remedy_id {rid!r} is not in the permitted list")
+        if rid in seen:
+            raise ValueError(f"remedy_id {rid!r} appears more than once")
+        seen.add(rid)
+
+        if not o.get("reasoning"):
+            raise ValueError(f"no reasoning given for {rid}")
+
+        # A discount is required for fee_concession, and only fee_concession,
+        # and it must fall inside the range the feasibility engine issued. That
+        # range was computed against policy and the client's remaining budget,
+        # so a value outside it is a hard violation, not a judgement call.
+        permitted_option = permitted_by_id[rid]
+        if "discount_range" in permitted_option:
+            discount = o.get("discount")
+            if discount is None:
+                raise ValueError(f"{rid} requires a discount")
+            lo, hi = permitted_option["discount_range"]
+            if not (lo <= discount <= hi):
+                raise ValueError(
+                    f"discount {discount} for {rid} is outside the permitted "
+                    f"range [{lo}, {hi}]"
+                )
+        else:
+            if "discount" in o and o["discount"] is not None:
+                raise ValueError(f"{rid} does not take a discount")
+
+    return options
+
+
+# ---------------------------------------------------------------------------
+# Model call
+# ---------------------------------------------------------------------------
+#
+# One retry on a malformed or invalid response, then raise. Temperature is 0 --
+# not full determinism, sampling still varies -- but it reduces run-to-run
+# variation, which matters given the paper claims reproducibility for the
+# deterministic stages and is honest about the model stages' variability.
+
+_client = None
+
+
+def _get_client():
+    global _client
+    if _client is None:
+        _client = genai.Client()  # reads GEMINI_API_KEY from the environment
+    return _client
+
+
+def _call_once(user_message):
+    client = _get_client()
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=user_message,
+        config=genai.types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+            temperature=0,
+            max_output_tokens=1500,
+        ),
+    )
+    return response.text
+
+
+def select_strategy(twin, diagnosis, feasibility_output, use_cache=True):
+    """
+    Run strategy selection for one client. Cached to disk keyed by client_id, so
+    reruns of the pipeline while building downstream stages don't re-spend on
+    clients already decided.
+    """
+    client_id = twin["client_id"]
+    cache = _load_cache() if use_cache else {}
+
+    if client_id in cache:
+        return cache[client_id]
+
+    user_message = build_user_message(twin, diagnosis, feasibility_output)
+    permitted = feasibility_output["permitted"]
+
+    last_error = None
+    for attempt in range(MAX_RETRIES + 1):
+        raw = _call_once(user_message)
+        try:
+            options = parse_response(raw, permitted)
+            break
+        except (json.JSONDecodeError, ValueError) as e:
+            last_error = e
+            time.sleep(1)
+    else:
+        raise RuntimeError(
+            f"strategy selection failed for {client_id} after "
+            f"{MAX_RETRIES + 1} attempt(s): {last_error}"
+        )
+
+    if use_cache:
+        cache[client_id] = options
+        _save_cache(cache)
+
+    return options
+
+
+def _load_cache():
+    if not os.path.exists(CACHE_PATH):
+        return {}
+    with open(CACHE_PATH) as f:
+        return json.load(f)
+
+
+def _save_cache(cache):
+    os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
+    with open(CACHE_PATH, "w") as f:
+        json.dump(cache, f, indent=2)
