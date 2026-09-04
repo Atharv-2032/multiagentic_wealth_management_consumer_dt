@@ -1,0 +1,35 @@
+{
+  "n_test": 3000,
+  "base_rate": 0.13,
+  "roc_auc": 0.8301,
+  "pr_auc": 0.5175,
+  "brier": 0.085,
+  "calibration": [
+    {
+      "n": 601,
+      "mean_predicted": 0.0194,
+      "observed_rate": 0.025
+    },
+    {
+      "n": 695,
+      "mean_predicted": 0.0447,
+      "observed_rate": 0.0302
+    },
+    {
+      "n": 504,
+      "mean_predicted": 0.0604,
+      "observed_rate": 0.0635
+    },
+    {
+      "n": 601,
+      "mean_predicted": 0.1211,
+      "observed_rate": 0.1331
+    },
+    {
+      "n": 599,
+      "mean_predicted": 0.3985,
+      "observed_rate": 0.404
+    }
+  ],
+  "horizon_months": 12
+}
