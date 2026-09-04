@@ -28,7 +28,10 @@ import json
 import os
 import time
 
+from dotenv import load_dotenv
 from google import genai
+
+load_dotenv()
 
 MODEL = "gemini-3.7-flash"
 MAX_OPTIONS = 3

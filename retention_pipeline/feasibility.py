@@ -19,7 +19,7 @@ prompt is applied here instead.
 
 from datetime import date, datetime
 
-from catalogs import (
+from catalogs.catalogs import (
     FEE_CONCESSION_MAX,
     FEE_CONCESSION_MIN,
     FEE_CONCESSION_MONTHS,

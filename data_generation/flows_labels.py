@@ -169,8 +169,8 @@ def extract_features(client):
     What the detector actually consumes. A model cannot take a variable-length
     list of transactions, so the flow list is reduced to scalars here.
     """
-    m = client["_meta"]
-    portfolio = m["portfolio_value"]
+    portfolio = sum(h["value"] for h in client["holdings"])
+    fee_rate = round(client["annual_fee_revenue"] / portfolio, 5) if portfolio else 0.0
     flows = client["recent_flows"]
 
     outflows = [f for f in flows if f["direction"] == "outflow"]
@@ -194,9 +194,9 @@ def extract_features(client):
         "net_flow_ratio": round((total_in - total_out) / portfolio, 4) if portfolio else 0.0,
         "recent_outflow_share": round(recent_out / total_out, 4) if total_out else 0.0,
         "contributions_stopped": 1 if total_in == 0 else 0,
-        "perf_spread_excess": round(spread - m["fee_rate"], 4),
-        "fee_rate": m["fee_rate"],
-        "fee_excess": round(m["fee_rate"] - BOOK_AVG_FEE_RATE, 5),
+        "perf_spread_excess": round(spread - fee_rate, 4),
+        "fee_rate": fee_rate,
+        "fee_excess": round(fee_rate - BOOK_AVG_FEE_RATE, 5),
         "tenure_years": client["tenure_years"],
         "sold_heavily": 1 if client["drawdown_behavior"] == "sold_heavily" else 0,
         "portfolio_value": portfolio,

@@ -24,9 +24,12 @@ import json
 import os
 import time
 
+from dotenv import load_dotenv
 from google import genai
 
-from catalogs import CAUSES
+from catalogs.catalogs import CAUSES
+
+load_dotenv()
 
 MODEL = "gemini-3.7-flash"
 MAX_CAUSES = 3
