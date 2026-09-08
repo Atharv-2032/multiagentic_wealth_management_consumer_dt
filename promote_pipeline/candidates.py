@@ -33,7 +33,7 @@ class weights.
 
 from collections import defaultdict
 
-from promote_catalogs import PRODUCTS
+from promote_pipeline.promote_catalogs import PRODUCTS
 
 
 def current_weights(twin):

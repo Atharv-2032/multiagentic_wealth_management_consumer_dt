@@ -44,7 +44,7 @@ import time
 from dotenv import load_dotenv
 from google import genai
 
-from promote_catalogs import FIT_CAUSES
+from promote_pipeline.promote_catalogs import FIT_CAUSES
 
 MODEL = "gemini-3.7-flash"
 MAX_OPTIONS = 3
@@ -103,9 +103,11 @@ most common and usually the strongest reason: the product moves the portfolio to
 a target that was set for this client.
 
 **`cash_drag`**
-Idle cash is sitting uninvested against a long horizon. Cash is not free of cost -- \
-it is a position that reliably loses purchasing power. Use this when the client holds \
-meaningful cash and the recommendation puts it to work.
+The client is holding cash they do not need. Check the allocation position before \
+claiming this: it holds only where the cash class is at or above its target, which \
+means there is surplus to deploy. A client sitting below their cash target is not \
+suffering cash drag -- they are short of cash, and their idle balance is doing the \
+job it is meant to do. An idle cash figure on its own is not evidence of anything.
 
 **`tax_inefficiency`**
 The client's marginal bracket makes a tax-advantaged vehicle materially better than \

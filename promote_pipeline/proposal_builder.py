@@ -39,7 +39,7 @@ client intends to add money, and inferring capacity from income less spending
 would be proposing to spend money the client has not offered.
 """
 
-from promote_catalogs import PRODUCTS_BY_ID
+from promote_pipeline.promote_catalogs import PRODUCTS_BY_ID
 
 # Applied to the amount that must be raised by selling. A stated rate standing
 # for commissions, spreads and the tax drag of realising gains. Not estimated
@@ -51,6 +51,44 @@ SALE_COST_RATE = 0.01
 
 FUNDING_IDLE_CASH = "idle_cash"
 FUNDING_REQUIRES_SALE = "requires_sale"
+
+# Where each tax treatment is best held. Asset location is a real and settled
+# question -- income taxed at the top marginal rate belongs in a shelter, and a
+# tax exemption is worth nothing inside one -- so it is decided by rule rather
+# than left to whichever account happens to sort first.
+#
+# The rule expresses a preference, not a constraint. Eligibility has already
+# established which accounts the product may be held in at all; this only
+# chooses among them.
+PREFERRED_ACCOUNT = {
+    # An exemption only exists against tax that would otherwise be owed.
+    # Holding these in a shelter wastes the exemption entirely.
+    "federally_tax_exempt_income": "taxable",
+    "state_tax_exempt_income": "taxable",
+
+    # Taxed at the client's full marginal rate, so shelter it where possible.
+    "ordinary_income": "tax_deferred",
+
+    # Preferential rates and realised losses only apply in a taxable account.
+    "qualified_dividends": "taxable",
+    "loss_harvested": "taxable",
+    "mixed_capital_gains": "tax_deferred",
+}
+
+
+def _account_for(product, eligible_accounts):
+    """
+    Which account to hold this product in.
+
+    The preferred account where the client has one, otherwise the first eligible
+    account. The fallback is arbitrary, but it is reached only when the
+    preference is unavailable, and eligibility has already confirmed every
+    account in the list is usable.
+    """
+    preferred = PREFERRED_ACCOUNT.get(product["tax_treatment"])
+    if preferred and preferred in eligible_accounts:
+        return preferred
+    return eligible_accounts[0]
 
 
 def _amount_for(product, gap_value, idle_cash):
@@ -124,7 +162,7 @@ def build_proposals(twin, ranked, eligibility_output):
                 "from_sale": from_sale,
             },
             "cost": cost,
-            "account": permitted_entry["eligible_accounts"][0],
+            "account": _account_for(product, permitted_entry["eligible_accounts"]),
             "addresses": entry["addresses"],
             "rationale": entry["reasoning"],
             "gap_context": {
