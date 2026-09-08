@@ -15,6 +15,11 @@ not exist.
 No investor qualification field. With a single client tier there is nothing for
 it to discriminate.
 
+No concentration_risk fit cause. Concentration is remedied by selling, and this
+track only ever proposes purchases, so the cause could name a problem the track
+has no action to address. Rebalancing belongs to the allocation track. Every
+remaining cause is one a purchase can respond to.
+
 Every remaining product attribute is read by something downstream. asset_class
 matches against the twin's target allocation, min_investment is the eligibility
 filter's main constraint, account_types is an operational restriction,
@@ -46,7 +51,6 @@ FIT_CAUSES = [
     "allocation_gap",       # holdings sit under target for this asset class
     "cash_drag",            # idle cash uninvested against a stated horizon
     "tax_inefficiency",     # bracket makes a tax-advantaged vehicle materially better
-    "concentration_risk",   # position concentrated enough that diversifying helps
     "goal_unmatched",       # a stated goal has no vehicle serving it
     "insufficient_fit",     # nothing in the permitted set is a good fit
 ]
