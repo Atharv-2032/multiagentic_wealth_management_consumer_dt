@@ -1,0 +1,38 @@
+{
+  "client_id": "P-DRAWDOWN-01",
+  "age": 68,
+  "tenure_years": 15.0,
+  "dependents": [],
+  "annual_fee_revenue": 10200.00,
+  "holdings": [
+    {"asset_class": "us_equity",    "value": 800000, "account_type": "taxable", "unrealized_gain": 480000},
+    {"asset_class": "intl_equity",  "value": 150000, "account_type": "taxable", "unrealized_gain": 60000},
+    {"asset_class": "fixed_income", "value": 200000, "account_type": "taxable", "unrealized_gain": 4000},
+    {"asset_class": "cash",         "value": 50000,  "account_type": "taxable", "unrealized_gain": 0}
+  ],
+  "trailing_return_12m": 0.072,
+  "benchmark_return_12m": 0.078,
+  "annual_income": 96000,
+  "monthly_spending": 9500,
+  "investable_assets": 1200000,
+  "idle_cash": 50000,
+  "tax_bracket": 0.24,
+  "stated_risk_tolerance": "conservative",
+  "risk_capacity": "conservative",
+  "drawdown_behavior": "held_through",
+  "goals": [{"type": "income", "target_age": 75}],
+  "target_allocation": {
+    "model_portfolio": "conservative_income",
+    "weights": {"us_equity": 0.25, "intl_equity": 0.10, "fixed_income": 0.55, "alternatives": 0.05, "cash": 0.05},
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {"amount": 32000, "date": "2025-10-05", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 28000, "date": "2025-12-12", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 35000, "date": "2026-02-20", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 30000, "date": "2026-04-17", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 38000, "date": "2026-06-09", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 34000, "date": "2026-08-21", "direction": "outflow", "destination_type": "merchant"}
+  ]
+}

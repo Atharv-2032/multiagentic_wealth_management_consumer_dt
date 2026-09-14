@@ -1,0 +1,42 @@
+{
+  "client_id": "P-ALIGNED-01",
+  "age": 61,
+  "tenure_years": 20.0,
+  "dependents": [],
+  "annual_fee_revenue": 5400.00,
+  "holdings": [
+    {"asset_class": "us_equity",    "value": 90000,  "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "intl_equity",  "value": 36000,  "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "fixed_income", "value": 200000, "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "fixed_income", "value": 130000, "account_type": "taxable",      "unrealized_gain": 3000},
+    {"asset_class": "cash",         "value": 144000, "account_type": "taxable",      "unrealized_gain": 0}
+  ],
+  "trailing_return_12m": 0.049,
+  "benchmark_return_12m": 0.055,
+  "annual_income": 120000,
+  "monthly_spending": 6500,
+  "investable_assets": 600000,
+  "idle_cash": 144000,
+  "tax_bracket": 0.22,
+  "stated_risk_tolerance": "conservative",
+  "risk_capacity": "conservative",
+  "drawdown_behavior": "held_through",
+  "goals": [{"type": "retirement", "target_age": 65}],
+  "target_allocation": {
+    "model_portfolio": "capital_preservation",
+    "weights": {"us_equity": 0.15, "intl_equity": 0.05, "fixed_income": 0.55, "alternatives": 0.00, "cash": 0.25},
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {"amount": 2000, "date": "2025-10-03", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2000, "date": "2025-11-03", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2000, "date": "2026-01-05", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2000, "date": "2026-03-04", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2000, "date": "2026-05-05", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2000, "date": "2026-07-06", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 7000, "date": "2025-12-18", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 5500, "date": "2026-04-22", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 6200, "date": "2026-08-09", "direction": "outflow", "destination_type": "merchant"}
+  ]
+}

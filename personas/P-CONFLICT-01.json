@@ -1,0 +1,40 @@
+{
+  "client_id": "P-CONFLICT-01",
+  "age": 52,
+  "tenure_years": 9.0,
+  "dependents": [{"age": 19}],
+  "annual_fee_revenue": 10000.00,
+  "holdings": [
+    {"asset_class": "us_equity",    "value": 300000, "account_type": "taxable",      "unrealized_gain": 80000},
+    {"asset_class": "us_equity",    "value": 220000, "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "intl_equity",  "value": 150000, "account_type": "taxable",      "unrealized_gain": 22000},
+    {"asset_class": "fixed_income", "value": 80000,  "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "cash",         "value": 50000,  "account_type": "taxable",      "unrealized_gain": 0}
+  ],
+  "trailing_return_12m": 0.061,
+  "benchmark_return_12m": 0.095,
+  "annual_income": 210000,
+  "monthly_spending": 11000,
+  "investable_assets": 800000,
+  "idle_cash": 50000,
+  "tax_bracket": 0.35,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [{"type": "retirement", "target_age": 65}],
+  "target_allocation": {
+    "model_portfolio": "balanced",
+    "weights": {"us_equity": 0.35, "intl_equity": 0.15, "fixed_income": 0.40, "alternatives": 0.05, "cash": 0.05},
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {"amount": 12000, "date": "2025-10-22", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 60000, "date": "2026-01-15", "direction": "outflow", "destination_type": "competitor_institution"},
+    {"amount": 9000,  "date": "2026-02-11", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 70000, "date": "2026-04-08", "direction": "outflow", "destination_type": "competitor_institution"},
+    {"amount": 11000, "date": "2026-05-30", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 50000, "date": "2026-07-19", "direction": "outflow", "destination_type": "competitor_institution"},
+    {"amount": 8000,  "date": "2026-08-14", "direction": "outflow", "destination_type": "merchant"}
+  ]
+}

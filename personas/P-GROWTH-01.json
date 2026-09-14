@@ -1,0 +1,40 @@
+{
+  "client_id": "P-GROWTH-01",
+  "age": 29,
+  "tenure_years": 3.0,
+  "dependents": [],
+  "annual_fee_revenue": 1620.00,
+  "holdings": [
+    {"asset_class": "us_equity",    "value": 86000, "account_type": "taxable",      "unrealized_gain": 14000},
+    {"asset_class": "us_equity",    "value": 40000, "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "fixed_income", "value": 9000,  "account_type": "tax_deferred", "unrealized_gain": 0},
+    {"asset_class": "cash",         "value": 45000, "account_type": "taxable",      "unrealized_gain": 0}
+  ],
+  "trailing_return_12m": 0.112,
+  "benchmark_return_12m": 0.104,
+  "annual_income": 145000,
+  "monthly_spending": 6200,
+  "investable_assets": 180000,
+  "idle_cash": 45000,
+  "tax_bracket": 0.24,
+  "stated_risk_tolerance": "aggressive",
+  "risk_capacity": "aggressive",
+  "drawdown_behavior": "bought_more",
+  "goals": [{"type": "retirement", "target_age": 65}, {"type": "home_purchase", "target_year": 2031}],
+  "target_allocation": {
+    "model_portfolio": "growth",
+    "weights": {"us_equity": 0.55, "intl_equity": 0.25, "fixed_income": 0.12, "alternatives": 0.05, "cash": 0.03},
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {"amount": 2500, "date": "2025-10-08", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2500, "date": "2025-12-08", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2500, "date": "2026-02-09", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2500, "date": "2026-04-08", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2500, "date": "2026-06-09", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 2500, "date": "2026-08-10", "direction": "inflow",  "destination_type": "own_account"},
+    {"amount": 3800, "date": "2026-03-14", "direction": "outflow", "destination_type": "merchant"},
+    {"amount": 2900, "date": "2026-07-02", "direction": "outflow", "destination_type": "merchant"}
+  ]
+}
