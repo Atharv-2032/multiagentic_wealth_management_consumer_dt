@@ -224,15 +224,25 @@ def _permitted_numbers(payload_text):
     Every figure the model was given, plus the forms it may legitimately appear
     in. A weight of 0.45 is correctly written as 45 percent, and a value of
     125000.0 as 125,000 -- neither is an invention.
+
+    Scaled forms are kept at several precisions because the prose rounds and the
+    input does not. A stored weight of 0.6667 is written as 66.67%, and a drift
+    of 0.4417 as 44.17% or 44%; all three are the same figure and none is
+    fabricated. Without the variants the check fires on its own formatting
+    instruction, which trains the reader to ignore it.
     """
     permitted = set()
+
+    def add(value):
+        permitted.add(round(value, 2))
+        permitted.add(round(value, 1))
+        permitted.add(float(round(value)))
+
     for value in _numbers_in(payload_text):
-        permitted.add(value)
-        permitted.add(round(value * 100, 2))     # weight written as a percentage
-        permitted.add(round(abs(value), 2))      # sign dropped in prose
-        permitted.add(round(abs(value) * 100, 2))
-        if value == int(value):
-            permitted.add(float(int(value)))
+        add(value)
+        add(abs(value))
+        add(value * 100)          # weight written as a percentage
+        add(abs(value) * 100)
     return permitted
 
 
@@ -249,7 +259,7 @@ def check_numbers(text, user_message):
     for value in sorted(_numbers_in(text)):
         if abs(value) <= _TRIVIAL_MAX:
             continue
-        if value in permitted:
+        if any(v in permitted for v in (round(value, 2), round(value, 1), float(round(value)))):
             continue
         invented.append(value)
     return invented

@@ -343,7 +343,14 @@ def _call_once(user_message):
         config=genai.types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
             temperature=0,
-            max_output_tokens=1500,
+            max_output_tokens=3000,
+            # Thinking tokens come out of the same output budget as the response
+            # on Gemini 3.x. With six permitted products the JSON was being cut
+            # off mid-string, which surfaced as a parse failure rather than as a
+            # truncation. The ranking judgement does not need a reasoning pass:
+            # the option set arrives already narrowed and the comparison is over
+            # a handful of products.
+            thinking_config=genai.types.ThinkingConfig(thinking_budget=0),
         ),
     )
     return response.text
