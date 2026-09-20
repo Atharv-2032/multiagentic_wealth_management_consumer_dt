@@ -161,6 +161,10 @@ def select_portfolio(risk_capacity, horizon_years):
 # is the threshold approximation, and the substitution is sound because the
 # builder's role is defined by what it outputs -- a decision, a delta and a
 # cost -- not by how precisely it computes them.
+#
+# Not comparable to SALE_COST_RATE in the promote track, despite the similar
+# description: this one is applied to the gain, that one to the sale proceeds
+# that contain it. A rate on gain is necessarily the larger of the two.
 REALISATION_COST_RATE = 0.18
 
 # The annual value of holding a correctly aligned portfolio, as a fraction of

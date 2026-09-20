@@ -32,6 +32,27 @@ def _available_accounts(twin):
     return {h["account_type"] for h in twin["holdings"]}
 
 
+def _client_capacity(twin):
+    """
+    Read risk capacity from the twin, and refuse to proceed without it.
+
+    Returning None here would be worse than failing. Every product would be
+    rejected on risk, and the output would read as a legitimate "nothing was
+    suitable" result rather than as a broken twin -- a silent failure that a
+    hand-written persona with a typo would produce and nobody would notice.
+
+    Same shape as risk_capacity() in the allocation track's planning fields,
+    for the same reason.
+    """
+    capacity = twin.get("risk_capacity")
+    if capacity not in RISK_LEVELS:
+        raise ValueError(
+            f"client {twin['client_id']}: risk_capacity is {capacity!r}, "
+            f"which is not one of {RISK_LEVELS}"
+        )
+    return capacity
+
+
 def _fundable_amount(twin, gap_value):
     """
     What could be put into this asset class.
@@ -71,7 +92,7 @@ def eligible_set(twin, candidate_output):
     care obligation asks a firm to produce.
     """
     accounts = _available_accounts(twin)
-    capacity = twin.get("risk_capacity")
+    capacity = _client_capacity(twin)
 
     permitted, rejected = [], []
 

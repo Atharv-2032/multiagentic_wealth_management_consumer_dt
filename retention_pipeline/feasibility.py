@@ -15,6 +15,11 @@ It also matters structurally. Because the option set is narrowed before the mode
 sees it, an infeasible proposal is not an error to catch downstream; it is
 unrepresentable. Every constraint that could otherwise be reasoned around in a
 prompt is applied here instead.
+
+Not applied here: a touch budget. Limiting how often a client is contacted
+requires counting contacts from every track, which no single-track component can
+do, and the layer that could is out of scope for this version. The constraint is
+therefore absent rather than represented by a field nothing enforces.
 """
 
 from datetime import date, datetime
@@ -213,7 +218,4 @@ def feasible_set(twin, causes, ledger):
             "spent_last_12m": round(spent, 2),
             "remaining": remaining,
         },
-        # Not a filter — it bounds the combination rather than invalidating any
-        # single option, so it travels with the set for the advisor to enforce.
-        "touch_budget_remaining": 1,
     }

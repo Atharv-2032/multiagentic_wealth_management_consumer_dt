@@ -1,9 +1,18 @@
 """
 Catalogs.
 
-Two static reference sets plus a ledger schema. These are data, not logic: the
-feasibility engine reads the remedy catalog and the ledger to decide what a given
-client may be offered, and promote's eligibility filter reads the product catalog.
+Static reference data for the retention track, plus a ledger schema. These are
+data, not logic. Three things here are read elsewhere:
+
+  - REMEDIES and the fee concession constants, by the retention feasibility
+    engine, which uses them with the ledger to decide what a given client may
+    be offered.
+  - CAUSES, by retention diagnosis, as the fixed taxonomy a diagnosis must
+    draw from.
+  - LEDGER_ENTRY_SCHEMA, as the shape of a spend record.
+
+The PRODUCTS list below is superseded and read by nothing; see the note above
+it.
 
 Nothing here makes a judgement. Whether a remedy is PERMITTED is a fact about
 policy and spend history; whether it is APPROPRIATE is decided downstream by the
@@ -135,13 +144,15 @@ CAUSES = [
 # Product catalog
 # ---------------------------------------------------------------------------
 #
+# SUPERSEDED. Nothing imports PRODUCTS or PRODUCTS_BY_ID from this module. The
+# live product catalog is promote_pipeline/promote_catalogs.py, which carries a
+# different field set -- min_investment, account_types, risk_level,
+# tax_treatment -- and is what candidates.py, eligibility_filter.py and
+# proposal_builder.py all read.
+#
 # Minimums are spread deliberately from zero upward. If every client cleared
 # every minimum the eligibility filter would never reject anything and the
 # infeasibility guarantee would be untested.
-#
-# Eligibility in the scoped version is a single check: investable_assets >= min.
-# Accredited status, jurisdiction and documented client restrictions are future
-# work; see the design document.
 
 PRODUCTS = [
     # --- no minimum, broad access -----------------------------------------
@@ -222,8 +233,7 @@ PRODUCTS_BY_ID = {p["id"]: p for p in PRODUCTS}
 # What has already been spent on a client and when. The feasibility engine reads
 # it to apply cooldowns and the spend cap; implementation writes to it.
 #
-# It is deliberately client-level rather than track-level. A touch budget only
-# means something if it counts contacts from every track, and a rule relating
+# It is deliberately client-level rather than track-level: a rule relating
 # retention spend to spend elsewhere cannot be enforced by a component that sees
 # only one track.
 
