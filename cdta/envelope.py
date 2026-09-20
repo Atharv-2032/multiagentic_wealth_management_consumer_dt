@@ -25,18 +25,23 @@ advisor asserting something it has no basis for.
 
 On tier
 --------
-Tier follows the track, and the rule underneath it is that tier 1 changes the
-client's financial position while tier 2 protects the relationship.
+Three tiers in a fixed order. Tier 1 changes the client's financial position,
+tier 2 protects the relationship, and tier 0 sits above both.
 
-Allocation and promote are tier 1. Retention is tier 2, including the remedies
-that look client-serving: a fee concession is money spent to stop someone
-leaving, and the firm would not offer it to a contented client. The motive is
-retention, and motive is what the tier records.
+Allocation and promote are tier 1. Retention is tier 2 by default, including the
+remedies that look client-serving: a fee concession is money spent to stop
+someone leaving, and the firm would not offer it to a contented client. The
+motive is retention, and motive is what the tier records.
 
 Where a portfolio is genuinely wrong, allocation is what catches it and
 allocation is tier 1. Retention's review responds to the client being unhappy
 about performance; allocation's rebalance responds to the performance problem
 itself. The client-interest action is the one that fixes the portfolio.
+
+Retention rises to tier 0 where the client's expected loss clears a stated
+threshold. Above that level the relationship itself is what is at stake, and
+acting on it takes precedence over optimising a portfolio the client may not
+hold much longer.
 
 On what is NOT here
 --------------------
@@ -54,16 +59,69 @@ it rather than to the envelope.
 
 TRACKS = ["retention", "promote", "allocation"]
 
-# Tier 1 changes the client's financial position; tier 2 protects the
-# relationship. Fixed per track, so there is nothing per-proposal to compute and
-# nothing to argue about when reading a decision back.
+# Three tiers, in a fixed order that never moves. Tier 1 changes the client's
+# financial position, tier 2 protects the relationship, and tier 0 sits above
+# both.
+#
+# Tier 0 exists because above a certain level of risk the relationship itself is
+# what is at stake, and acting on it takes precedence over optimising a
+# portfolio the client may not hold much longer. Only retention reaches it, and
+# only on a client whose expected loss clears the threshold below.
+#
+# Retention is placed ABOVE tier 1 rather than inside it. Putting it inside
+# would mean ranking it against allocation and promote by value, and retention's
+# value is revenue at risk to the firm while theirs is benefit to the client --
+# two different quantities with no exchange rate between them. Dominating avoids
+# the comparison entirely, which is also what the rule is meant to say.
 TIER_BY_TRACK = {
     "allocation": 1,
     "promote": 1,
     "retention": 2,
 }
 
-TIER_LABELS = {1: "client_interest", 2: "firm_interest"}
+TIER_RETENTION_DOMINANT = 0
+
+TIER_LABELS = {
+    0: "relationship_at_risk",
+    1: "client_interest",
+    2: "firm_interest",
+}
+
+# Expected fraction of the client's assets at risk -- the detector's probability
+# times its severity -- above which retention takes tier 0.
+#
+# Probability alone would not do. A high chance of losing a small slice is less
+# urgent than a moderate chance of losing most of an account, and probability
+# cannot tell those apart; the product can.
+#
+# A stated parameter, like the rebalancing premium, and reported the same way.
+# Across the current personas the expected fractions are 0.371, 0.020, 0.017,
+# 0.009 and 0.001, so any threshold between roughly 0.05 and 0.35 separates the
+# same single client. The wide margin is the point: the result does not turn on
+# the exact number.
+RETENTION_DOMINANCE_THRESHOLD = 0.25
+
+
+def tier_for(track, expected_fraction_at_risk=None):
+    """
+    Which tier a proposal belongs to.
+
+    The tier ORDER is fixed; which tier a proposal lands in is computed. That
+    distinction is what lets the ordering stay mechanically enforceable while
+    still responding to the client's situation -- a shifting order would forfeit
+    the property, a shifting membership does not.
+
+    expected_fraction_at_risk is only meaningful for retention, and only where
+    the detector ran. Absent, retention takes its default tier.
+    """
+    if track != "retention":
+        return TIER_BY_TRACK[track]
+
+    if (expected_fraction_at_risk is not None
+            and expected_fraction_at_risk >= RETENTION_DOMINANCE_THRESHOLD):
+        return TIER_RETENTION_DOMINANT
+
+    return TIER_BY_TRACK["retention"]
 
 # Who pays. The two are not summable and are never summed: a fee concession is
 # the firm's money, while a sale cost or a realised tax bill is the client's.
@@ -108,14 +166,16 @@ def make_proposal(
     funding_source=FUNDING_NONE,
     asset_class=None,
     source_detail=None,
+    expected_fraction_at_risk=None,
 ):
     """
     Build one envelope.
 
-    tier is not a parameter. It follows from the track, and letting a caller
-    pass it would allow two proposals from the same track to land in different
-    tiers -- which is exactly the situational ordering the lexicographic
-    selection exists to rule out.
+    tier is not a parameter. It is computed by tier_for() from the track and,
+    for retention, the client's expected loss. Letting a caller pass it directly
+    would allow two proposals from the same track to land in different tiers for
+    reasons no rule states, which is exactly the situational ordering the
+    lexicographic selection exists to rule out.
 
     source_detail carries whatever the originating track wants preserved for
     display and audit. Nothing in the advisor reads it. It is kept separate from
@@ -150,7 +210,7 @@ def make_proposal(
     return {
         "client_id": client_id,
         "track": track,
-        "tier": TIER_BY_TRACK[track],
+        "tier": tier_for(track, expected_fraction_at_risk),
         "action_id": action_id,
         "amount": amount,
         "cost": round(float(cost), 2),
@@ -164,7 +224,8 @@ def make_proposal(
 
 
 def make_context(client_id, diagnosis, firm_spend_cap, firm_spend_remaining,
-                 idle_cash, gaps, portfolio_value):
+                 idle_cash, gaps, portfolio_value,
+                 expected_fraction_at_risk=None):
     """
     What the advisor knows about the client, as distinct from any one proposal.
 
@@ -185,6 +246,10 @@ def make_context(client_id, diagnosis, firm_spend_cap, firm_spend_remaining,
         "idle_cash": idle_cash,
         "gaps": gaps or {},
         "portfolio_value": portfolio_value,
+        # Carried here as well as used at tier assignment, because it is a fact
+        # about the client rather than about any one proposal, and the semantic
+        # detector reads client state only from this object.
+        "expected_fraction_at_risk": expected_fraction_at_risk,
     }
 
 

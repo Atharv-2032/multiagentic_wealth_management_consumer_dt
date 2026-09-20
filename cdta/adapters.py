@@ -45,6 +45,27 @@ from cdta.envelope import (
 NULL_REMEDIES = {"accept_loss"}
 
 
+def expected_fraction_at_risk(detector_output):
+    """
+    The share of the client's assets the detector expects to lose.
+
+    Probability times severity. The detector emits both separately because
+    neither alone ranks clients usefully -- a near-certain loss of a sliver is
+    not the same problem as a coin-flip on most of an account -- and their
+    product is the figure that combines them.
+
+    Returns None where the detector did not run, which leaves retention at its
+    default tier rather than promoting it on a figure nobody computed.
+    """
+    if not detector_output:
+        return None
+    probability = detector_output.get("probability")
+    severity = detector_output.get("severity")
+    if probability is None or severity is None:
+        return None
+    return round(probability * severity, 4)
+
+
 # ---------------------------------------------------------------------------
 # Retention
 # ---------------------------------------------------------------------------
@@ -71,6 +92,11 @@ def from_retention(twin, detector_output, diagnosis, feasibility_output,
     """
     revenue_at_risk = detector_output.get("revenue_at_risk", 0.0)
     permitted = {p["remedy_id"]: p for p in feasibility_output["permitted"]}
+
+    # Decides whether retention takes tier 0. Passed to every proposal from this
+    # track because it is a property of the client, so all of them move together
+    # -- a client cannot be at risk for one remedy and not another.
+    at_risk = expected_fraction_at_risk(detector_output)
 
     proposals = []
     for option in strategy_options:
@@ -107,6 +133,7 @@ def from_retention(twin, detector_output, diagnosis, feasibility_output,
             amount=None,
             funding_source=FUNDING_NONE,
             asset_class=None,
+            expected_fraction_at_risk=at_risk,
             source_detail={
                 "label": permitted_entry.get("label"),
                 "discount": option.get("discount"),
@@ -251,7 +278,8 @@ def from_allocation(twin, allocation_proposal):
 # Context
 # ---------------------------------------------------------------------------
 
-def build_context(twin, diagnosis, feasibility_output, candidate_output):
+def build_context(twin, diagnosis, feasibility_output, candidate_output,
+                  detector_output=None):
     """
     Assemble what the advisor knows about the client.
 
@@ -274,4 +302,5 @@ def build_context(twin, diagnosis, feasibility_output, candidate_output):
         idle_cash=twin.get("idle_cash", 0),
         gaps=(candidate_output or {}).get("gaps", {}),
         portfolio_value=sum(h["value"] for h in twin["holdings"]),
+        expected_fraction_at_risk=expected_fraction_at_risk(detector_output),
     )
