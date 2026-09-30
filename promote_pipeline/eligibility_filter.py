@@ -24,7 +24,7 @@ candidates restricted to under-target classes the omission is mild -- the client
 is short of the class either way -- but it is an omission, not a decision.
 """
 
-from promote_catalogs import PRODUCTS_BY_ID, RISK_LEVELS
+from promote_pipeline.promote_catalogs import PRODUCTS_BY_ID, RISK_LEVELS
 
 
 def _available_accounts(twin):
