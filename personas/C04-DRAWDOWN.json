@@ -1,0 +1,93 @@
+{
+  "client_id": "C04-DRAWDOWN",
+  "age": 69,
+  "tenure_years": 16.0,
+  "dependents": [],
+  "annual_fee_revenue": 9600,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 300000,
+      "account_type": "taxable",
+      "unrealized_gain": 110000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 110000,
+      "account_type": "taxable",
+      "unrealized_gain": 30000
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 500000,
+      "account_type": "taxable",
+      "unrealized_gain": 9000
+    },
+    {
+      "asset_class": "cash",
+      "value": 90000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.061,
+  "benchmark_return_12m": 0.066,
+  "annual_income": 92000,
+  "monthly_spending": 9200,
+  "investable_assets": 1000000,
+  "idle_cash": 90000,
+  "tax_bracket": 0.24,
+  "stated_risk_tolerance": "conservative",
+  "risk_capacity": "conservative",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "income",
+      "target_age": 78
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "conservative_income",
+    "weights": {
+      "us_equity": 0.25,
+      "intl_equity": 0.1,
+      "fixed_income": 0.55,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 34000,
+      "date": "2025-10-14",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 29000,
+      "date": "2025-12-19",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 36000,
+      "date": "2026-02-03",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 31000,
+      "date": "2026-05-11",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 33000,
+      "date": "2026-08-18",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

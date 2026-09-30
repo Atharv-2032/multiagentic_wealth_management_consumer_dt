@@ -1,0 +1,81 @@
+{
+  "client_id": "C10-NARROWED",
+  "age": 48,
+  "tenure_years": 7.5,
+  "dependents": [],
+  "annual_fee_revenue": 12000,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 380000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 110000,
+      "account_type": "taxable",
+      "unrealized_gain": 21000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 160000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 130000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 30000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.075,
+  "benchmark_return_12m": 0.082,
+  "annual_income": 195000,
+  "monthly_spending": 9000,
+  "investable_assets": 810000,
+  "idle_cash": 30000,
+  "tax_bracket": 0.35,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "moderate_growth",
+    "weights": {
+      "us_equity": 0.45,
+      "intl_equity": 0.2,
+      "fixed_income": 0.25,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 12500,
+      "date": "2025-12-19",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 11000,
+      "date": "2026-05-11",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

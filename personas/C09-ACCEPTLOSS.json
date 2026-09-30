@@ -1,0 +1,75 @@
+{
+  "client_id": "C09-ACCEPTLOSS",
+  "age": 71,
+  "tenure_years": 12.0,
+  "dependents": [],
+  "annual_fee_revenue": 900,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 30000,
+      "account_type": "taxable",
+      "unrealized_gain": 4000
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 48000,
+      "account_type": "taxable",
+      "unrealized_gain": 600
+    },
+    {
+      "asset_class": "cash",
+      "value": 12000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.052,
+  "benchmark_return_12m": 0.058,
+  "annual_income": 42000,
+  "monthly_spending": 3100,
+  "investable_assets": 90000,
+  "idle_cash": 12000,
+  "tax_bracket": 0.12,
+  "stated_risk_tolerance": "conservative",
+  "risk_capacity": "conservative",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "income",
+      "target_age": 80
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "conservative_income",
+    "weights": {
+      "us_equity": 0.25,
+      "intl_equity": 0.1,
+      "fixed_income": 0.55,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 4200,
+      "date": "2025-11-20",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 3800,
+      "date": "2026-03-22",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 4500,
+      "date": "2026-07-06",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

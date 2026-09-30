@@ -1,0 +1,75 @@
+{
+  "client_id": "C19-NOFIT",
+  "age": 34,
+  "tenure_years": 3.5,
+  "dependents": [],
+  "annual_fee_revenue": 1500,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 84000,
+      "account_type": "taxable",
+      "unrealized_gain": 11000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 30000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 8000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 28000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.099,
+  "benchmark_return_12m": 0.096,
+  "annual_income": 112000,
+  "monthly_spending": 5100,
+  "investable_assets": 150000,
+  "idle_cash": 28000,
+  "tax_bracket": 0.12,
+  "stated_risk_tolerance": "aggressive",
+  "risk_capacity": "aggressive",
+  "drawdown_behavior": "bought_more",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "growth",
+    "weights": {
+      "us_equity": 0.55,
+      "intl_equity": 0.25,
+      "fixed_income": 0.12,
+      "alternatives": 0.05,
+      "cash": 0.03
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 1600,
+      "date": "2025-12-19",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 1600,
+      "date": "2026-07-06",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    }
+  ]
+}

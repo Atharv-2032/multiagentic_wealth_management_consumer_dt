@@ -1,0 +1,81 @@
+{
+  "client_id": "C17-RISKREJECT",
+  "age": 64,
+  "tenure_years": 18.0,
+  "dependents": [],
+  "annual_fee_revenue": 6000,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 120000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 34000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 240000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 106000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.046,
+  "benchmark_return_12m": 0.051,
+  "annual_income": 105000,
+  "monthly_spending": 5800,
+  "investable_assets": 500000,
+  "idle_cash": 106000,
+  "tax_bracket": 0.22,
+  "stated_risk_tolerance": "conservative",
+  "risk_capacity": "conservative",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 68
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "capital_preservation",
+    "weights": {
+      "us_equity": 0.15,
+      "intl_equity": 0.05,
+      "fixed_income": 0.55,
+      "alternatives": 0.0,
+      "cash": 0.25
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 1500,
+      "date": "2025-11-20",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 1500,
+      "date": "2026-05-11",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 5200,
+      "date": "2026-02-03",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

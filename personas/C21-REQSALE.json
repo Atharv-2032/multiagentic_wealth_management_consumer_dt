@@ -1,0 +1,75 @@
+{
+  "client_id": "C21-REQSALE",
+  "age": 45,
+  "tenure_years": 9.0,
+  "dependents": [],
+  "annual_fee_revenue": 5600,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 300000,
+      "account_type": "taxable",
+      "unrealized_gain": 52000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 97000,
+      "account_type": "taxable",
+      "unrealized_gain": 12000
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 30000,
+      "account_type": "taxable",
+      "unrealized_gain": 400
+    },
+    {
+      "asset_class": "cash",
+      "value": 3000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.081,
+  "benchmark_return_12m": 0.086,
+  "annual_income": 158000,
+  "monthly_spending": 8900,
+  "investable_assets": 430000,
+  "idle_cash": 3000,
+  "tax_bracket": 0.32,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "moderate_growth",
+    "weights": {
+      "us_equity": 0.45,
+      "intl_equity": 0.2,
+      "fixed_income": 0.25,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 7800,
+      "date": "2025-12-19",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 6900,
+      "date": "2026-07-06",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

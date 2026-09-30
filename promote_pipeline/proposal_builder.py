@@ -47,6 +47,10 @@ from promote_pipeline.promote_catalogs import PRODUCTS_BY_ID
 # would actually be sold is a decision this track does not make. The figure is
 # here so a proposal carries a cost at all, and it is stated rather than
 # computed so that nobody mistakes it for a tax calculation.
+#
+# Not comparable to REALISATION_COST_RATE in the allocation track, despite the
+# similar description: this one is applied to the sale proceeds, that one to the
+# gain inside them. The bases differ by roughly the ratio of the two rates.
 SALE_COST_RATE = 0.01
 
 FUNDING_IDLE_CASH = "idle_cash"

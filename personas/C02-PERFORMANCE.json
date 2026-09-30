@@ -1,0 +1,87 @@
+{
+  "client_id": "C02-PERFORMANCE",
+  "age": 44,
+  "tenure_years": 7.0,
+  "dependents": [],
+  "annual_fee_revenue": 5800,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 280000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 120000,
+      "account_type": "taxable",
+      "unrealized_gain": 30000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 90000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 70000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 20000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.021,
+  "benchmark_return_12m": 0.084,
+  "annual_income": 155000,
+  "monthly_spending": 7200,
+  "investable_assets": 580000,
+  "idle_cash": 20000,
+  "tax_bracket": 0.24,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "moderate_growth",
+    "weights": {
+      "us_equity": 0.45,
+      "intl_equity": 0.2,
+      "fixed_income": 0.25,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 9000,
+      "date": "2025-11-20",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 7500,
+      "date": "2026-03-22",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 8200,
+      "date": "2026-07-06",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

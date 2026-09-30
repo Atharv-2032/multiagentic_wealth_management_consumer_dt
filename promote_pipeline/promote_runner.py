@@ -102,11 +102,15 @@ def main():
 
     try:
         run(twin)
-    except KeyError as e:
-        # Most likely a twin missing target_allocation, which candidate
-        # generation needs and nothing defaults. Failing loudly is correct: a
-        # missing target should not be quietly treated as no gap.
-        print(f"\nTWIN FIELD MISSING: {e}", file=sys.stderr)
+    except (KeyError, ValueError) as e:
+        # KeyError: a twin missing target_allocation, which candidate
+        # generation needs and nothing defaults. ValueError: a field present
+        # but outside its vocabulary, such as risk_capacity.
+        #
+        # Failing loudly is correct in both cases. A missing target should not
+        # be treated as no gap, and an unreadable risk capacity should not be
+        # treated as nothing being suitable.
+        print(f"\nTWIN FIELD PROBLEM: {e}", file=sys.stderr)
         sys.exit(2)
     except RuntimeError as e:
         # Raised by fit evaluation after retries fail, or when the API key is

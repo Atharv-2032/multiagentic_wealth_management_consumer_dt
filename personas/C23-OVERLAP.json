@@ -1,0 +1,87 @@
+{
+  "client_id": "C23-OVERLAP",
+  "age": 43,
+  "tenure_years": 8.0,
+  "dependents": [],
+  "annual_fee_revenue": 7000,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 300000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 120000,
+      "account_type": "taxable",
+      "unrealized_gain": 26000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 110000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 25000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 45000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.086,
+  "benchmark_return_12m": 0.09,
+  "annual_income": 172000,
+  "monthly_spending": 8100,
+  "investable_assets": 600000,
+  "idle_cash": 45000,
+  "tax_bracket": 0.32,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "moderate_growth",
+    "weights": {
+      "us_equity": 0.45,
+      "intl_equity": 0.2,
+      "fixed_income": 0.25,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 1800,
+      "date": "2025-11-20",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 1800,
+      "date": "2026-05-11",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 7400,
+      "date": "2026-02-03",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}
