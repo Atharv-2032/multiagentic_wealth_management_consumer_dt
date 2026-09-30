@@ -1,0 +1,75 @@
+{
+  "client_id": "C24-EXCLUSIVITY",
+  "age": 40,
+  "tenure_years": 7.0,
+  "dependents": [],
+  "annual_fee_revenue": 6800,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 470000,
+      "account_type": "taxable",
+      "unrealized_gain": 210000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 20000,
+      "account_type": "taxable",
+      "unrealized_gain": 3000
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 25000,
+      "account_type": "taxable",
+      "unrealized_gain": 400
+    },
+    {
+      "asset_class": "cash",
+      "value": 20000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.088,
+  "benchmark_return_12m": 0.094,
+  "annual_income": 168000,
+  "monthly_spending": 8200,
+  "investable_assets": 535000,
+  "idle_cash": 20000,
+  "tax_bracket": 0.32,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "moderate_growth",
+    "weights": {
+      "us_equity": 0.45,
+      "intl_equity": 0.2,
+      "fixed_income": 0.25,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 8100,
+      "date": "2025-12-19",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 7300,
+      "date": "2026-07-06",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

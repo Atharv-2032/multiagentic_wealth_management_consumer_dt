@@ -47,6 +47,7 @@ stated over structured fields is one the advisor has no basis to assert.
 
 import json
 import os
+import re
 import time
 
 from dotenv import load_dotenv
@@ -189,6 +190,22 @@ def build_user_message(passed, context, deterministic_conflicts):
 # Validation
 # ---------------------------------------------------------------------------
 
+_CITATION_SEGMENTS = re.compile(r"[.\[\]]+")
+
+
+def _cites_a_real_field(citation):
+    """
+    Whether a citation names something the advisor actually reads.
+
+    Accepts a bare field name and any path containing one, because the model
+    reasonably writes diagnosis.cause or retention.action_id rather than the
+    bare field. Rejects anything with no citable segment, which is what keeps
+    an assertion from resting on rationale prose.
+    """
+    segments = [s for s in _CITATION_SEGMENTS.split(citation) if s]
+    return any(s in CITABLE_FIELDS for s in segments)
+
+
 def parse_response(text, passed, deterministic_conflicts):
     """
     Parse and validate.
@@ -247,7 +264,16 @@ def parse_response(text, passed, deterministic_conflicts):
         if not fields:
             raise ValueError(f"no fields cited for {pair[0]} / {pair[1]}")
         for f in fields:
-            if f not in CITABLE_FIELDS:
+            # A citation may name a field, a path into one, or a path through a
+            # proposal -- diagnosis.cause, gaps.fixed_income and
+            # retention.action_id all point at something real, and rejecting
+            # them on punctuation would fail a well-grounded assertion.
+            #
+            # The test is that SOME segment names a field the advisor reads.
+            # That still blocks what the check exists to block: rationale,
+            # source_detail.reasoning and anything else resting on prose
+            # contain no citable segment at all.
+            if not _cites_a_real_field(f):
                 raise ValueError(
                     f"cited field {f!r} is not one the advisor reads"
                 )

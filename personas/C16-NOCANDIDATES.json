@@ -1,0 +1,87 @@
+{
+  "client_id": "C16-NOCANDIDATES",
+  "age": 30,
+  "tenure_years": 3.0,
+  "dependents": [],
+  "annual_fee_revenue": 2000,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 100000,
+      "account_type": "taxable",
+      "unrealized_gain": 18000
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 40000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 50000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 24000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 6000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.104,
+  "benchmark_return_12m": 0.099,
+  "annual_income": 130000,
+  "monthly_spending": 5400,
+  "investable_assets": 220000,
+  "idle_cash": 6000,
+  "tax_bracket": 0.24,
+  "stated_risk_tolerance": "aggressive",
+  "risk_capacity": "aggressive",
+  "drawdown_behavior": "bought_more",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "growth",
+    "weights": {
+      "us_equity": 0.55,
+      "intl_equity": 0.25,
+      "fixed_income": 0.12,
+      "alternatives": 0.05,
+      "cash": 0.03
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 1800,
+      "date": "2025-10-14",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 1800,
+      "date": "2026-02-03",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 1800,
+      "date": "2026-07-06",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    }
+  ]
+}

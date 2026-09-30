@@ -1,0 +1,87 @@
+{
+  "client_id": "C14-PAIDREBAL",
+  "age": 38,
+  "tenure_years": 4.0,
+  "dependents": [],
+  "annual_fee_revenue": 7200,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 430000,
+      "account_type": "taxable",
+      "unrealized_gain": 38000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 60000,
+      "account_type": "taxable",
+      "unrealized_gain": 6000
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 40000,
+      "account_type": "taxable",
+      "unrealized_gain": 800
+    },
+    {
+      "asset_class": "cash",
+      "value": 70000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.093,
+  "benchmark_return_12m": 0.097,
+  "annual_income": 175000,
+  "monthly_spending": 7600,
+  "investable_assets": 600000,
+  "idle_cash": 70000,
+  "tax_bracket": 0.24,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "bought_more",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "moderate_growth",
+    "weights": {
+      "us_equity": 0.45,
+      "intl_equity": 0.2,
+      "fixed_income": 0.25,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 2200,
+      "date": "2025-10-14",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 2200,
+      "date": "2026-02-03",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 2200,
+      "date": "2026-07-06",
+      "direction": "inflow",
+      "destination_type": "own_account"
+    },
+    {
+      "amount": 6400,
+      "date": "2026-05-11",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    }
+  ]
+}

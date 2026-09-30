@@ -1,0 +1,93 @@
+{
+  "client_id": "C25-SEMANTIC",
+  "age": 51,
+  "tenure_years": 8.5,
+  "dependents": [],
+  "annual_fee_revenue": 13500,
+  "holdings": [
+    {
+      "asset_class": "us_equity",
+      "value": 360000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "us_equity",
+      "value": 130000,
+      "account_type": "taxable",
+      "unrealized_gain": 24000
+    },
+    {
+      "asset_class": "intl_equity",
+      "value": 150000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "fixed_income",
+      "value": 45000,
+      "account_type": "tax_deferred",
+      "unrealized_gain": 0
+    },
+    {
+      "asset_class": "cash",
+      "value": 60000,
+      "account_type": "taxable",
+      "unrealized_gain": 0
+    }
+  ],
+  "trailing_return_12m": 0.069,
+  "benchmark_return_12m": 0.077,
+  "annual_income": 205000,
+  "monthly_spending": 10200,
+  "investable_assets": 745000,
+  "idle_cash": 60000,
+  "tax_bracket": 0.35,
+  "stated_risk_tolerance": "moderate",
+  "risk_capacity": "moderate",
+  "drawdown_behavior": "held_through",
+  "goals": [
+    {
+      "type": "retirement",
+      "target_age": 65
+    }
+  ],
+  "target_allocation": {
+    "model_portfolio": "balanced",
+    "weights": {
+      "us_equity": 0.35,
+      "intl_equity": 0.15,
+      "fixed_income": 0.4,
+      "alternatives": 0.05,
+      "cash": 0.05
+    },
+    "tolerance_band": 0.05,
+    "derived_from": "allocation"
+  },
+  "recent_flows": [
+    {
+      "amount": 11000,
+      "date": "2025-10-14",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 9500,
+      "date": "2026-05-11",
+      "direction": "outflow",
+      "destination_type": "merchant"
+    },
+    {
+      "amount": 85000,
+      "date": "2025-12-19",
+      "direction": "outflow",
+      "destination_type": "competitor_institution"
+    },
+    {
+      "amount": 75000,
+      "date": "2026-07-06",
+      "direction": "outflow",
+      "destination_type": "competitor_institution"
+    }
+  ]
+}

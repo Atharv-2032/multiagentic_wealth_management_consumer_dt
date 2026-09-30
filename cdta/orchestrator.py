@@ -33,8 +33,12 @@ to propose, so failures are recorded and reported rather than swallowed.
 """
 
 import argparse
+import datetime
 import json
+import os
+import subprocess
 import sys
+import uuid
 
 from dotenv import load_dotenv
 
@@ -63,6 +67,26 @@ from retention_pipeline.detector import ChurnDetector
 from retention_pipeline.diagnosis import diagnose
 from retention_pipeline.feasibility import feasible_set
 from retention_pipeline.strategy import select_strategy
+
+
+RUN_DIR = os.path.join("out", "runs")
+
+# The four stages that cache by client_id. Probed before and after the run to
+# record whether each was served from disk or actually called. Nothing is
+# imported from those modules beyond the path constant, so none of them changes.
+CACHED_STAGES = {
+    "diagnosis": os.path.join("out", "diagnoses.json"),
+    "strategy": os.path.join("out", "strategies.json"),
+    "fit_evaluation": os.path.join("out", "fit_evaluations.json"),
+    "semantic_conflicts": os.path.join("out", "semantic_conflicts.json"),
+}
+
+MODELS = {
+    "diagnosis": "gemini-3.7-flash",
+    "strategy": "gemini-3.7-flash",
+    "fit_evaluation": "gemini-3.7-flash",
+    "semantic_conflicts": "gemini-3.7-flash",
+}
 
 
 def _dump(label, payload, quiet):
@@ -147,13 +171,80 @@ def _try(name, fn, failures):
         return None
 
 
+def _cache_has(path, client_id):
+    """Whether this client's key is already in a stage's cache file."""
+    try:
+        with open(path) as f:
+            return client_id in json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return False
+
+
+def _probe_caches(client_id):
+    return {k: _cache_has(p, client_id) for k, p in CACHED_STAGES.items()}
+
+
+def _stage_sources(before, after):
+    """
+    cached    the key was already there, so no model was called
+    called    the key appeared during this run
+    not_run   the stage never reached the model or the cache
+
+    The third state is real: the semantic detector returns early when fewer
+    than two proposals pass, and recording that as "not cached" would imply a
+    call that never happened.
+    """
+    out = {}
+    for stage in CACHED_STAGES:
+        if before[stage]:
+            out[stage] = "cached"
+        elif after[stage]:
+            out[stage] = "called"
+        else:
+            out[stage] = "not_run"
+    return out
+
+
+def _git_commit():
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL, text=True,
+        ).strip()
+    except Exception:  # noqa: BLE001 - absent git is not an error here
+        return None
+
+
+def _write_run_record(result):
+    """
+    Save the complete record. A failure here is reported and never raised:
+    the decision stands whether or not it was written down.
+    """
+    try:
+        client_id = result["client_id"]
+        ts = result["run"]["timestamp"].replace(":", "-")
+        d = os.path.join(RUN_DIR, client_id)
+        os.makedirs(d, exist_ok=True)
+        path = os.path.join(d, f"{ts}.json")
+        with open(path, "w") as f:
+            json.dump(result, f, indent=2, default=str)
+        return path
+    except Exception as e:  # noqa: BLE001
+        print(f"\n[warn] could not write run record: {e}", file=sys.stderr)
+        return None
+
+
 # ---------------------------------------------------------------------------
 # End to end
 # ---------------------------------------------------------------------------
 
-def run(twin, ledger=None, quiet=False):
+def run(twin, ledger=None, quiet=False, ledger_path=None, record=True):
     ledger = ledger or []
     failures = []
+
+    client_id = twin["client_id"]
+    started = datetime.datetime.now(datetime.timezone.utc)
+    cache_before = _probe_caches(client_id)
 
     retention = _try("retention", lambda: run_retention(twin, ledger), failures)
     allocation = _try("allocation", lambda: run_allocation(twin), failures)
@@ -217,8 +308,24 @@ def run(twin, ledger=None, quiet=False):
     sequenced = sequence(selection)
     _dump("5. SEQUENCE", sequenced, quiet)
 
-    return {
-        "client_id": twin["client_id"],
+    cache_after = _probe_caches(client_id)
+
+    result = {
+        "run": {
+            "run_id": str(uuid.uuid4()),
+            "timestamp": started.isoformat(timespec="seconds"),
+            "ledger_path": ledger_path,
+            "git_commit": _git_commit(),
+            "models": MODELS,
+            "stage_sources": _stage_sources(cache_before, cache_after),
+        },
+        "client_id": client_id,
+        # Exactly as the three run_* functions returned them, unreshaped.
+        "tracks": {
+            "retention": retention,
+            "allocation": allocation,
+            "promote": promote,
+        },
         "context": context,
         "proposals": proposals,
         "filtered": filtered,
@@ -227,6 +334,13 @@ def run(twin, ledger=None, quiet=False):
         "sequence": sequenced,
         "track_failures": failures,
     }
+
+    if record:
+        path = _write_run_record(result)
+        if path and not quiet:
+            print(f"\nrun record: {path}")
+
+    return result
 
 
 def _summary(result):
@@ -291,7 +405,7 @@ def main():
         print(f"loaded twin {twin['client_id']} from {args.persona}")
 
     try:
-        result = run(twin, ledger, quiet=args.quiet)
+        result = run(twin, ledger, quiet=args.quiet, ledger_path=args.ledger)
     except RuntimeError as e:
         # Raised by the semantic detector after retries fail, or when the API
         # key is absent. A track failure is recorded and does not reach here.

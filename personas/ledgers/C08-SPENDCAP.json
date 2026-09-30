@@ -1,0 +1,10 @@
+[
+  {
+    "client_id": "C08-SPENDCAP",
+    "remedy_id": "portfolio_review",
+    "cost": 700.0,
+    "granted_date": "2026-03-10",
+    "status": "granted",
+    "track": "retention"
+  }
+]
